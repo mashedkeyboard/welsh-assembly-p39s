@@ -14,6 +14,10 @@ class Results < Scraped::JSON
 end
 
 class Membership < Scraped::JSON
+  field :statement do
+    json.dig(:ps, :value).to_s.split('/').last
+  end
+
   field :id do
     json.dig(:item, :value).to_s.split('/').last
   end
@@ -54,7 +58,7 @@ end
 WIKIDATA_SPARQL_URL = 'https://query.wikidata.org/sparql?format=json&query=%s'
 
 memberships_query = <<SPARQL
-  SELECT ?item ?itemLabel ?group ?groupLabel ?district ?districtLabel ?start ?end ?term ?termLabel ?termOrdinal
+  SELECT ?ps ?item ?itemLabel ?group ?groupLabel ?district ?districtLabel ?start ?end ?term ?termLabel ?termOrdinal
   {
     ?item p:P39 ?ps .
     ?ps ps:P39/wdt:P279* wd:Q3406079 .
@@ -73,4 +77,4 @@ data = Results.new(response: Scraped::Request.new(url: url).response).membership
 puts data.map(&:compact).map(&:sort).map(&:to_h) if ENV['MORPH_DEBUG']
 
 ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil
-ScraperWiki.save_sqlite(%i[id term party_id start_date], data)
+ScraperWiki.save_sqlite(%i[statement], data)
