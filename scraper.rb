@@ -73,7 +73,8 @@ memberships_query = <<SPARQL
 SPARQL
 
 url = WIKIDATA_SPARQL_URL % CGI.escape(memberships_query)
-data = Results.new(response: Scraped::Request.new(url: url).response).memberships
+data = Results.new(response: Scraped::Request.new(url: url,
+                                                  headers: { "User-Agent" => "welsh-assembly-p39s morph scraper - curtis [at] loudspeek [dot] cc" }).response).memberships
 puts data.map(&:compact).map(&:sort).map(&:to_h) if ENV['MORPH_DEBUG']
 
 ScraperWiki.sqliteexecute('DROP TABLE data') rescue nil

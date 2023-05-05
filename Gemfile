@@ -4,7 +4,7 @@
 # specified here will be installed and made available to your morph.io scraper.
 # Find out more: https://morph.io/documentation/ruby
 
-ruby '2.4.4'
+ruby '2.5.3'
 
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
